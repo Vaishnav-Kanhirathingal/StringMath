@@ -131,11 +131,27 @@ class Fraction {
         if (this.isPositive == other.isPositive) normalSubstraction(a = this, b = other)
         else sameSignAddition(a = this, b = -other)
 
-    operator fun unaryMinus(): Fraction {
-        return Fraction(
-            top = this.top, bottom = this.bottom, isPositive = !this.isPositive
+    operator fun unaryMinus(): Fraction =
+        Fraction(
+            top = this.top,
+            bottom = this.bottom,
+            isPositive = !this.isPositive
         )
-    }
+
+    operator fun times(other: Fraction): Fraction =
+        Fraction(
+            top = this.top * other.top,
+            bottom = this.bottom * other.bottom,
+            isPositive = (this.isPositive == other.isPositive)
+        )
+
+
+    operator fun div(other: Fraction): Fraction =
+        Fraction(
+            top = this.top * other.bottom,
+            bottom = this.bottom * other.top,
+            isPositive = (this.isPositive == other.isPositive)
+        )
 
     override fun toString(): String {
         return "${if (this.isPositive) "+" else "-"}${this.top.value}/${this.bottom.value}"

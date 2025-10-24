@@ -32,13 +32,15 @@ class FractionTests {
         )
     }
 
-    enum class FractionActions { ADD, SUBTRACT } // TODO: MULTIPLY, DIVIDE } // TODO: SIMPLIFY, FRACTIONALIZE
+    enum class FractionActions { ADD, SUBTRACT, MULTIPLY, DIVIDE } // TODO: SIMPLIFY, FRACTIONALIZE
 
     private class FractionTestHelper(
         val a: String,
         val b: String,
-        val act: FractionActions,
-        val res: String
+        val addRes: String,
+        val subRes: String,
+        val mulRes: String,
+        val divRes: String,
     )
 
     @Test
@@ -47,37 +49,54 @@ class FractionTests {
             FractionTestHelper(
                 a = "3",
                 b = "10",
-                act = FractionActions.ADD,
-                res = "+11/1"
+                addRes = "+13/1",
+                subRes = "-7/1",
+                mulRes = "+30/1",
+                divRes = "+3/10"
             ),
             FractionTestHelper(
                 a = "3",
                 b = "-10",
-                act = FractionActions.ADD,
-                res = "-9/1"
+                addRes = "-7/1",
+                subRes = "+13/1",
+                mulRes = "-30/1",
+                divRes = "-3/10"
             ),
             FractionTestHelper(
                 a = "-3",
                 b = "10",
-                act = FractionActions.ADD,
-                res = "+9/1"
+                addRes = "+7/1",
+                subRes = "-13/1",
+                mulRes = "-30/1",
+                divRes = "-3/10"
             ),
             FractionTestHelper(
                 a = "-3",
                 b = "-10",
-                act = FractionActions.ADD,
-                res = "-11/1"
+                addRes = "-13/1",
+                subRes = "+7/1",
+                mulRes = "+30/1",
+                divRes = "+3/10"
             ),
         ).forEach { testObj ->
             val a = Fraction(value = testObj.a)
             val b = Fraction(value = testObj.b)
-            assertEquals(
-                expected = testObj.res,
-                actual = when (testObj.act) {
-                    FractionActions.ADD -> a + b
-                    FractionActions.SUBTRACT -> a - b
-                }.toString()
-            )
+            FractionActions.entries.forEach {
+                assertEquals(
+                    expected = when (it) {
+                        FractionActions.ADD -> testObj.addRes
+                        FractionActions.SUBTRACT -> testObj.subRes
+                        FractionActions.MULTIPLY -> testObj.mulRes
+                        FractionActions.DIVIDE -> testObj.divRes
+                    },
+                    actual = when (it) {
+                        FractionActions.ADD -> a + b
+                        FractionActions.SUBTRACT -> a - b
+                        FractionActions.MULTIPLY -> a * b
+                        FractionActions.DIVIDE -> a / b
+                    }.toString()
+                )
+            }
         }
     }
 }
