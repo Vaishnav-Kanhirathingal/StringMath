@@ -13,13 +13,16 @@ class UnSignedInteger {
      * this allows for more readable numbers
      */
     constructor(value: String) {
-        value.filter { it != '_' }.let {
-            this._value = when {
-                it.isEmpty() -> "0"
-                it.isAPlainUnSignedInteger() -> it
-                else -> throw IllegalArgumentException("value of $value is not a plain unsigned integer")
+        value
+            .filter { it != '_' }
+            .dropWhile { it == '0' }
+            .let {
+                this._value = when {
+                    it.isEmpty() -> "0"
+                    it.isAPlainUnSignedInteger() -> it
+                    else -> throw IllegalArgumentException("value of $value is not a plain unsigned integer")
+                }
             }
-        }
     }
 
     operator fun compareTo(other: UnSignedInteger): Int {
