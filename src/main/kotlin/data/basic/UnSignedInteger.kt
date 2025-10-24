@@ -5,16 +5,20 @@ import org.example.util.extensions.string.getIntOnIndexOrElse
 import org.example.util.extensions.string.isAPlainUnSignedInteger
 import kotlin.math.max
 
-// TODO: add support for underscore separated numbers
 class UnSignedInteger {
     private var _value: String
     val value: String get() = _value
 
+    /** @param value is a normal string of only numbers or numbers with underscores eg - `"1234"` or `"1_234_567"`
+     * this allows for more readable numbers
+     */
     constructor(value: String) {
-        if (value.isAPlainUnSignedInteger()) {
-            this._value = value
-        } else {
-            throw IllegalArgumentException("value of $value is not a plain unsigned integer")
+        value.filter { it != '_' }.let {
+            this._value = when {
+                it.isEmpty() -> "0"
+                it.isAPlainUnSignedInteger() -> it
+                else -> throw IllegalArgumentException("value of $value is not a plain unsigned integer")
+            }
         }
     }
 
@@ -124,4 +128,6 @@ class UnSignedInteger {
     fun trim() {
         this._value = this._value.trimStart { it == '0' }
     }
+
+    fun toSignedInteger(): SignedInteger = SignedInteger(value = value, isPositive = true)
 }
