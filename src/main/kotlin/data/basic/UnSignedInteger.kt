@@ -6,8 +6,7 @@ import org.example.util.extensions.string.isAPlainUnSignedInteger
 import kotlin.math.max
 
 class UnSignedInteger {
-    private var _value: String
-    val value: String get() = _value
+    val value: String
 
     /** @param value is a normal string of only numbers or numbers with underscores eg - `"1234"` or `"1_234_567"`
      * this allows for more readable numbers
@@ -17,7 +16,7 @@ class UnSignedInteger {
             .filter { it != '_' }
             .dropWhile { it == '0' }
             .let {
-                this._value = when {
+                this.value = when {
                     it.isEmpty() -> "0"
                     it.isAPlainUnSignedInteger() -> it
                     else -> throw IllegalArgumentException("value of $value is not a plain unsigned integer")
@@ -58,7 +57,7 @@ class UnSignedInteger {
             carry = total.getIntOnIndexOrElse(index = 0)
             result += total.getOrNull(index = 1) ?: '0'
         }
-        return UnSignedInteger(value = result.reversed()).apply { this.trim() }
+        return UnSignedInteger(value = result.reversed())
     }
 
     operator fun minus(other: UnSignedInteger): UnSignedInteger {
@@ -83,7 +82,7 @@ class UnSignedInteger {
                     }
                 }.let { result += it }
             }
-            return UnSignedInteger(value = result.reversed()).apply { this.trim() }
+            return UnSignedInteger(value = result.reversed())
         }
     }
 
@@ -126,10 +125,6 @@ class UnSignedInteger {
 
     override fun toString(): String {
         return "value = ${this.value}"
-    }
-
-    fun trim() {
-        this._value = this._value.trimStart { it == '0' }
     }
 
     fun toSignedInteger(): SignedInteger = SignedInteger(value = value, isPositive = true)

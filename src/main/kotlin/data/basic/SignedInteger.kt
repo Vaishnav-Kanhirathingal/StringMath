@@ -52,7 +52,6 @@ class SignedInteger {
 
 
     companion object {
-        // TODO: check
         private fun normalAdditionOfSignedIntegers(
             first: SignedInteger,
             second: SignedInteger,
