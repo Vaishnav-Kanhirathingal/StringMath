@@ -13,4 +13,14 @@ class UnsignedIntegerTests {
             assertThrows<IllegalArgumentException> { UnSignedInteger(value = it) }.printStackTrace()
         }
     }
+
+    @Test
+    fun calculations() {
+        assert(value = (UnSignedInteger(value = "200") + UnSignedInteger(value = "453")).value == "653")
+        assert(value = (UnSignedInteger(value = "567") - UnSignedInteger(value = "123")).value == "444")
+        assertThrows<IllegalStateException> {
+            UnSignedInteger(value = "123") - UnSignedInteger(value = "567")
+        }
+        assert(value = (UnSignedInteger(value = "45") * UnSignedInteger(value = "222")).value == "9990")
+    }
 }
