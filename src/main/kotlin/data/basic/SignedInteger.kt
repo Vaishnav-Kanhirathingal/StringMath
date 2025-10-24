@@ -1,7 +1,5 @@
 package org.example.data.basic
 
-import org.example.util.extensions.string.isAPlainUnSignedInteger
-
 class SignedInteger {
     val isPositive: Boolean
     val value: UnSignedInteger
@@ -13,14 +11,8 @@ class SignedInteger {
                 this.isPositive = true
             }
 
-            /** normal number without labelling */
-            value.isAPlainUnSignedInteger() -> {
-                this.value = UnSignedInteger(value)
-                this.isPositive = true
-            }
-
             /** number with labelling */
-            value.first().let { it == '-' || it == '+' } && value.drop(n = 1).isAPlainUnSignedInteger() -> {
+            value.first() in listOf('-', '+') -> {
                 this.value = UnSignedInteger(value = value.drop(n = 1))
                 this.isPositive = when (val first = value.first()) {
                     '-' -> false
@@ -29,21 +21,22 @@ class SignedInteger {
                 }
             }
 
-            else -> throw IllegalArgumentException("string $value is illegal")
+            /** normal number without labelling */
+            else -> {
+                this.value = UnSignedInteger(value = value)
+                this.isPositive = true
+            }
         }
     }
 
     constructor(
         value: String,
         isPositive: Boolean,
-    ) {
-        if (value.isAPlainUnSignedInteger()) {
-            this.value = UnSignedInteger(value = value)
-            this.isPositive = isPositive
-        } else {
-            throw IllegalArgumentException("value should be an unsigned integer")
-        }
-    }
+    ) : this(
+        value = UnSignedInteger(value = value),
+        isPositive = isPositive
+    )
+
 
     constructor(
         value: UnSignedInteger,
@@ -60,13 +53,13 @@ class SignedInteger {
 
     companion object {
         // TODO: check
-        fun normalAdditionOfSignedIntegers(
+        private fun normalAdditionOfSignedIntegers(
             first: SignedInteger,
             second: SignedInteger,
         ): SignedInteger =
             if (first.isPositive == second.isPositive) {
                 SignedInteger(
-                    value = (first.value * second.value),
+                    value = (first.value + second.value),
                     isPositive = first.isPositive
                 )
             } else {
@@ -87,6 +80,13 @@ class SignedInteger {
     }
 
     operator fun minus(other: SignedInteger): SignedInteger {
-        return normalAdditionOfSignedIntegers(first = this, second = other)
+        return normalAdditionOfSignedIntegers(first = this, second = -other)
     }
+
+    operator fun times(other: SignedInteger): SignedInteger =
+        SignedInteger(value = this.value * other.value, isPositive = this.isPositive == other.isPositive)
+
+    /** reverses the polarity of number */
+    operator fun unaryMinus(): SignedInteger = SignedInteger(value = this.value, isPositive = !this.isPositive)
+
 }
